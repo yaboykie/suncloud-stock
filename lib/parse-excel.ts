@@ -1,6 +1,19 @@
 import * as XLSX from "xlsx";
 import { StockEntry } from "@/types/stock";
-import { MODEL_LOOKUP } from "./known-models";
+import { MODEL_LOOKUP, KNOWN_MODELS } from "./known-models";
+
+// Build a secondary lookup that strips all spaces for fuzzy matching
+const FUZZY_LOOKUP: Record<string, string> = {};
+for (const m of KNOWN_MODELS) {
+  FUZZY_LOOKUP[m.replace(/\s+/g, "").toUpperCase()] = m;
+}
+
+// Known aliases: Excel model name → PRICE_DATA model name
+const ALIASES: Record<string, string> = {
+  "PDU1-B+BASE-NEW VERSION": "PDU1-B+Base",
+  "COMBINER BOX-300": "Combiner Box",
+  "SDM120CTM-40MA/ESCT-TA16": "SDM630MCT-40mA / ESCT-TA16",
+};
 
 interface ParseResult {
   entries: Record<string, StockEntry>;
@@ -57,9 +70,13 @@ export function parseStockFile(buffer: Buffer): ParseResult {
 
     if (!modelVal) continue;
 
-    // Match against known models (case-insensitive, trimmed)
+    // Match against known models: exact → fuzzy (no spaces) → alias
     const normalized = modelVal.toUpperCase();
-    const knownModel = MODEL_LOOKUP[normalized];
+    const aliased = ALIASES[normalized];
+    const knownModel =
+      MODEL_LOOKUP[normalized] ??
+      FUZZY_LOOKUP[modelVal.replace(/\s+/g, "").toUpperCase()] ??
+      (aliased ? MODEL_LOOKUP[aliased.toUpperCase()] : undefined);
 
     if (knownModel) {
       entries[knownModel] = {
