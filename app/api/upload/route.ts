@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "No matching models found in the uploaded file. Make sure it has a 'Summary Table' sheet with a MODEL column.",
+          "No matching models found in the uploaded file. Make sure it contains inventory data with recognizable model names.",
         unmatched,
       },
       { status: 400 }

@@ -126,8 +126,8 @@ export default function AdminPage() {
           <h2 style={styles.h2}>Upload Stock File</h2>
           <p style={{ color: "#8e8e93", fontSize: 13, marginBottom: 16 }}>
             Upload your warehouse Excel (.xlsx) or CSV file. The system will
-            read the &quot;Summary Table&quot; sheet and match MODEL numbers to
-            update stock levels.
+            read the inventory data and match MODEL numbers to
+            update stock levels. Supports both SUNCLOUD Inventory Details and Sydney Warehouse formats.
           </p>
 
           <div
