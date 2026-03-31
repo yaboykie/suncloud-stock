@@ -128,7 +128,7 @@ function parseWarehouseSheets(wb: XLSX.WorkBook): ParseResult {
         const val = String(row[c] ?? "")
           .trim()
           .toLowerCase()
-          .replace(/\n/g, " ");
+          .replace(/[\n\s]+/g, " ");
         // Prefer "product description" over "model" — in some sheets
         // "Model" is a category column while "Product description" has
         // the actual model strings
